@@ -1,0 +1,161 @@
+<?php
+require_once '../config.php';
+
+// Get all products with categories
+$products = $pdo->query("SELECT p.*, c.name as category_name 
+                         FROM products p 
+                         LEFT JOIN categories c ON p.category_id = c.id 
+                         ORDER BY p.id DESC");
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahni Furniture - Premium Furniture Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        .navbar {
+            background: #2c3e50 !important;
+        }
+        .navbar-brand {
+            color: white !important;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .nav-link {
+            color: white !important;
+        }
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+        .product-card {
+            margin-bottom: 30px;
+            transition: 0.3s;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        .product-price {
+            color: #e74c3c;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .category-badge {
+            background: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.php">
+                <i class="bi bi-house-heart"></i> Sahni Furniture
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#products">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categories.php">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../logout.php">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="display-4">Welcome to Sahni Furniture</h1>
+            <p class="lead">Discover premium quality furniture for your home</p>
+            <a href="#products" class="btn btn-primary btn-lg">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Our Products</h2>
+            
+            <div class="row">
+                <?php while($product = $products->fetch()): ?>
+                <div class="col-md-4 col-lg-3">
+                    <div class="card product-card">
+                        <div class="card-body">
+                            <span class="category-badge"><?php echo $product['category_name']; ?></span>
+                            <h5 class="card-title mt-2"><?php echo $product['name']; ?></h5>
+                            <p class="card-text"><?php echo substr($product['description'], 0, 60) . '...'; ?></p>
+                            <p class="product-price">₹<?php echo number_format($product['price'], 2); ?></p>
+                            <p class="text-muted">Stock: <?php echo $product['stock']; ?></p>
+                            <a href="product_detail.php?id=<?php echo $product['id']; ?>" class="btn btn-outline-primary btn-sm">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <?php endwhile; ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Sahni Furniture</h5>
+                    <p>Your trusted partner for premium furniture since 1990.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">About Us</a></li>
+                        <li><a href="#" class="text-white">Contact</a></li>
+                        <li><a href="#" class="text-white">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Info</h5>
+                    <p><i class="bi bi-geo-alt"></i> 123 Furniture Market, City</p>
+                    <p><i class="bi bi-telephone"></i> +91 1234567890</p>
+                    <p><i class="bi bi-envelope"></i> info@sahnifurniture.com</p>
+                </div>
+            </div>
+            <hr>
+            <p class="text-center mb-0">&copy; 2024 Sahni Furniture. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
